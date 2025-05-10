@@ -74,9 +74,11 @@ def fetch_news(tickers, days):
         st.session_state.setdefault('api_calls', []).append(f"Fetching news for {tickers} with {days} days")
         
         # Include the days parameter in the URL path to ensure cache invalidation
+        # Use a timeout to prevent long waits
         response = requests.get(
             f"{BACKEND_URL}/api/news",
-            params=params
+            params=params,
+            timeout=20  # 20 second timeout for news API
         )
         response.raise_for_status()
         results = response.json()
@@ -124,7 +126,8 @@ def fetch_sentiment_summary(tickers, days):
         
         response = requests.get(
             f"{BACKEND_URL}/api/sentiment_summary",
-            params=params
+            params=params,
+            timeout=20  # 20 second timeout
         )
         response.raise_for_status()
         return response.json()
@@ -169,7 +172,8 @@ def fetch_export_data(tickers, days):
         
         response = requests.get(
             f"{BACKEND_URL}/api/export",
-            params=params
+            params=params,
+            timeout=20  # 20 second timeout
         )
         response.raise_for_status()
         data = response.json()
@@ -197,9 +201,10 @@ def analyze_custom_text(text):
 def check_api_health():
     """Check if the backend API is available"""
     try:
-        response = requests.get(f"{BACKEND_URL}/health")
+        response = requests.get(f"{BACKEND_URL}/health", timeout=5)
         return response.status_code == 200
-    except:
+    except Exception as e:
+        st.session_state['api_health_error'] = str(e)
         return False
 
 # Function to convert data to CSV for download
@@ -334,8 +339,12 @@ def main():
         backend_available = check_api_health()
         if not backend_available:
             st.warning("⚠️ Backend API is not available. This is a demo interface.")
+            if 'api_health_error' in st.session_state:
+                with st.expander("Connection Error Details"):
+                    st.error(f"Error connecting to {BACKEND_URL}: {st.session_state['api_health_error']}")
+                    st.info("If using Render.com, make sure both services are deployed and running.")
         else:
-            st.success("✅ Connected to backend API")
+            st.success(f"✅ Connected to backend API: {BACKEND_URL}")
         
         # Stock ticker selection (with default options)
         all_tickers = st.text_input(

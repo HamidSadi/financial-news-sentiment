@@ -30,12 +30,7 @@ services:
     startCommand: streamlit run run_frontend.py --server.port $PORT --server.headless true --server.address 0.0.0.0
     envVars:
       - key: BACKEND_URL
-        fromService:
-          name: financial-news-backend
-          type: web
-          property: url
-        envVarPrefix: ""
-        envVarSuffix: ""
+        value: https://financial-news-backend-93w8.onrender.com
       - key: STREAMLIT_SERVER_HEADLESS
         value: true
       - key: STREAMLIT_SERVER_ADDRESS
