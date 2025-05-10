@@ -11,8 +11,9 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("financial_sentiment")
 
-# Port for HTTP server
-PORT = 8001
+# Get port from environment variable or use default
+import os
+PORT = int(os.environ.get("PORT", 8000))
 
 # Demo data for financial news sentiment analysis
 class NewsAPI:
@@ -599,8 +600,13 @@ def run_server():
     # Allow socket reuse to avoid "Address already in use" errors
     socketserver.TCPServer.allow_reuse_address = True
     
+    # Log environment variables for debugging on Render.com
+    logger.info(f"Starting server with PORT={PORT}")
+    logger.info(f"Environment variables: PORT={os.environ.get('PORT')}")
+    
     try:
-        with socketserver.TCPServer(("0.0.0.0", PORT), handler) as httpd:
+        # Using empty string "" instead of "0.0.0.0" for better compatibility
+        with socketserver.TCPServer(("", PORT), handler) as httpd:
             logger.info(f"Financial News Sentiment Analysis API running at http://0.0.0.0:{PORT}")
             logger.info("Press Ctrl+C to stop the server")
             
