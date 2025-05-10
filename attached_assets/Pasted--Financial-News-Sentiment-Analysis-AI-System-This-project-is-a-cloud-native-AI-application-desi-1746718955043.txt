@@ -1,0 +1,91 @@
+📊 Financial News Sentiment Analysis – AI System
+
+This project is a cloud-native AI application designed to analyze the sentiment of financial news related to selected stock tickers. It utilizes a pretrained FinBERT transformer model to classify each news headline as positive, neutral, or negative, and presents the results in a dashboard interface.
+🧠 Core Features
+🧩 Backend (FastAPI)
+
+    News Scraping: Scrapes recent financial news headlines for selected stock tickers using Yahoo Finance.
+
+    Sentiment Analysis: Runs each headline through a FinBERT model (via HuggingFace Transformers).
+
+    RESTful API Endpoints:
+
+        /analyze: Accepts tickers and returns sentiment scores.
+
+        /news: Returns the scraped raw news.
+
+        /sentiment/csv: Downloads sentiment data as CSV.
+
+    Logging: Integrated with MLflow (logging only, no training).
+
+    Dockerized for isolated deployment.
+
+📊 Frontend (Streamlit)
+
+    Dashboard UI to:
+
+        Select stock tickers.
+
+        View headlines and sentiment results.
+
+        Visualize trends over time.
+
+        Filter by date or sentiment.
+
+        Download sentiment data.
+
+🧱 Full File Structure
+
+financial-news-sentiment-analysis/
+├── backend/
+│   ├── app/
+│   │   ├── main.py               # FastAPI app entry point
+│   │   ├── api.py                # Routes for news and sentiment
+│   │   ├── sentiment.py          # FinBERT logic
+│   │   ├── news_scraper.py       # Yahoo Finance scraper
+│   │   └── utils.py              # Helpers (e.g., date, formatting)
+│   ├── tests/
+│   │   ├── test_api.py           # API test cases
+│   │   └── test_sentiment.py     # Unit tests for sentiment functions
+│   ├── Dockerfile                # Dockerfile for backend
+│   ├── requirements.txt          # Python dependencies
+│   └── mlflow_setup/
+│       └── setup.py              # MLflow tracking setup
+├── frontend/
+│   ├── app/
+│   │   └── dashboard.py          # Streamlit UI
+│   ├── Dockerfile                # Dockerfile for frontend
+│   └── requirements.txt          # Streamlit dependencies
+├── model/
+│   └── finbert_loader.py         # Loads pretrained FinBERT model
+├── .env.example                  # Template for environment variables
+├── docker-compose.yml           # Run frontend and backend together
+└── README.md                     # Project documentation
+
+🚀 Technologies Used
+
+    FastAPI – backend API
+
+    Streamlit – frontend dashboard
+
+    Transformers – FinBERT (from HuggingFace)
+
+    Yahoo Finance – news scraping
+
+    MLflow – experiment/model logging
+
+    Docker – containerization
+
+    GitHub – version control
+
+    Google Cloud / Render / Replit – deployment
+
+🌍 Deployment Options
+
+    Render (Recommended for backend API with Docker support)
+
+    Replit (If uploading files directly)
+
+    Google Cloud Run (Cloud-native with Docker & auto-scaling)
+
+    Netlify or Streamlit Cloud (for frontend only)

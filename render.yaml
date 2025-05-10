@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: financial-news-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r project_requirements.txt
+    startCommand: python run_backend.py
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: LOG_LEVEL
+        value: INFO
+      - key: LOG_FORMAT
+        value: json
+      - key: MODEL_VERSION
+        value: rule-based-v1
+      # Add your NewsAPI key in the Render dashboard
+      # - key: NEWS_API_KEY
+      #   value: your-api-key-here
+
+  - type: web
+    name: financial-news-frontend
+    env: python
+    plan: free
+    buildCommand: pip install -r project_requirements.txt
+    startCommand: streamlit run run_frontend.py --server.port $PORT --server.headless true --server.address 0.0.0.0
+    envVars:
+      - key: BACKEND_URL
+        fromService:
+          name: financial-news-backend
+          type: web
+          property: url
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: true
+      - key: STREAMLIT_SERVER_ADDRESS
+        value: 0.0.0.0
