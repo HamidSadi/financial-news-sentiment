@@ -6,9 +6,11 @@ services:
     buildCommand: pip install -r project_requirements.txt
     startCommand: python run_backend.py
     healthCheckPath: /health
+    # Use Render's default PORT environment variable
+    # Explicitly tell our app to use this port
     envVars:
       - key: PORT
-        value: 8000
+        sync: false # This means use Render's PORT value
       - key: LOG_LEVEL
         value: INFO
       - key: LOG_FORMAT
@@ -31,8 +33,9 @@ services:
         fromService:
           name: financial-news-backend
           type: web
-          property: hostport
-        envVarPrefix: https://
+          property: url
+        envVarPrefix: ""
+        envVarSuffix: ""
       - key: STREAMLIT_SERVER_HEADLESS
         value: true
       - key: STREAMLIT_SERVER_ADDRESS

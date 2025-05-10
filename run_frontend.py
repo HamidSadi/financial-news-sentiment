@@ -14,7 +14,24 @@ st.set_page_config(
 )
 
 # Constants
-BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8001")  # Backend API URL from environment or default
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")  # Backend API URL from environment or default
+
+# Include minimal debugging in collapsible section
+# This helps troubleshoot connection issues between frontend and backend
+with st.sidebar.expander("Connection Diagnostics", expanded=False):
+    st.write(f"BACKEND_URL: {BACKEND_URL}")
+    
+    # Test health endpoint directly
+    try:
+        health_url = f"{BACKEND_URL}/health"
+        response = requests.get(health_url, timeout=5)
+        if response.status_code == 200:
+            st.success("✓ Backend API connection successful")
+        else:
+            st.error(f"✗ Backend API returned unexpected status: {response.status_code}")
+    except Exception as e:
+        st.error(f"✗ Backend API connection failed: {str(e)}")
+        st.info("This likely means the backend server is not running or not accessible at the configured URL.")
 DEFAULT_TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
 DEFAULT_DAYS = 7
 
